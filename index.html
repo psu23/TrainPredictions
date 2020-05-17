@@ -8,19 +8,8 @@
 
     <title>Train Predictions</title>
 
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <!-- Bootstrap CDN-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
-    <!-- Firebase References -->
-    <script src="https://www.gstatic.com/firebasejs/7.4.14/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.4.14/firebase-database.js"></script>
-
-    <!-- Added Moment JS -->
-    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 
 </head>
 
@@ -71,10 +60,20 @@
 
     </div>
 
+    <!--JQuery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+     <!-- Added Moment JS -->
+     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+
+    <!--Firebase Links-->
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+
     <script>
 
         // Web app's Firebase configuration
-        var firebaseConfig = {
+        var config = {
             apiKey: "AIzaSyBRjZsr6XPK7L-U8tfzWxgcyOMb34hTh28",
             authDomain: "trainpredictions-94fb6.firebaseapp.com",
             databaseURL: "https://trainpredictions-94fb6.firebaseio.com",
@@ -85,87 +84,80 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(config);
+        var database = firebase.database();
 
         var train = "";
         var destination = "";
         var firstTime = "";
         var frequency;
 
-        $("#new-submission").on("click", function(event){
+        $("#new-submission").on("click", function (event) {
             event.preventDefault();
 
-            train = $("#add-train").val().trim();
-            destination = $("#add-train").val().trim();
-            firstTime
-            frequency
-        })
-        // Assume the following situations.
+            //collect input from form
+            train = $("#new-train").val().trim();
+            destination = $("#new-destination").val().trim();
+            firstTime = $("#new-first-time").val().trim();
+            frequency = $("#new-frequency").val().trim();
 
-        // (TEST 1)
-        // First Train of the Day is 3:00 AM
-        var firstTime = "3:00 AM";
-        var currentTime = moment();
-        var trainInterval = time
+            //empty form after submission
+            $("#new-train").val("");
+            $("#new-destination").val("");
+            $("#new-first-time").val("");
+            $("#new-frequency").val("");
 
-        // Assume Train comes every 3 minutes.
-        // Assume the current time is 3:16 AM....
-        // What time would the next train be...? (Use your brain first)
-        // It would be 3:18 -- 2 minutes away
+            //save user input as an array and assign their firebase names (left of colon)
+            var newSubmission = {
+                dbTrain: train,
+                dbDestination: destination,
+                dbFirstTime: firstTime,
+                dbFrequency: frequency
+            }
 
-        // (TEST 2)
-        // First Train of the Day is 3:00 AM
-        // Assume Train comes every 7 minutes.
-        // Assume the current time is 3:16 AM....
-        // What time would the next train be...? (Use your brain first)
-        // It would be 3:21 -- 5 minutes away
+            //send input to Firebase database
+            database.ref().push(newSubmission);
+        });
+
+        database.ref().on("child_added", function (childSnapshot) {
+
+            //collect all children stored in firebase
+            train = childSnapshot.val().dbTrain;
+            destination = childSnapshot.val().dbDestination;
+            firstTime = childSnapshot.val().dbFirstTime;
+            frequency = childSnapshot.val().dbFrequency;
+
+            //set the time in hours and minutes
+
+            var firstTimeHourMinute = moment(firstTime, "HH:mm");
+            var currentTime = moment();
+
+            //determine the time at which the next train will arrive
+            //how many minutes between current time and the first time
+            var timeDiff = currentTime.diff(firstTimeHourMinute, "minutes");
+            console.log("timeDiff: " + timeDiff);
+
+            //determine the time apart between now and next train
+            remainder = timeDiff % frequency;//(use modulus to determine remainder)
+            console.log("tRemainder: " + remainder);
+
+            // Determine the number of minutes until the next train
+            var minUntilNext = frequency - remainder;
+            console.log("Minutes until next train: " + minUntilNext);
+
+            // add the amount of minutes until the next train to the current time
+            var nextTrain = currentTime.add(minUntilNext, "minutes");
+            var arrivalTime = nextTrain.format("HH:mm A")
+            console.log("Next arrival: " + moment(nextTrain).format("hh:mm"));
+
+            //append the necessary data to the table
+            $("#table-rows").append("<tr><td>" + train + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + arrivalTime + "</td><td>" + minUntilNext + "</td>");
+
+        }, function(errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });
 
 
-        // ==========================================================
-
-        // Solved Mathematically
-        // Test case 1:
-        // 16 - 00 = 16
-        // 16 % 3 = 1 (Modulus is the remainder)
-        // 3 - 1 = 2 minutes away
-        // 2 + 3:16 = 3:18
-
-        // Solved Mathematically
-        // Test case 2:
-        // 16 - 00 = 16
-        // 16 % 7 = 2 (Modulus is the remainder)
-        // 7 - 2 = 5 minutes away
-        // 5 + 3:16 = 3:21
-
-        // Assumptions
-        var tFrequency = 3;
-
-        // Time is 3:30 AM
-        var firstTime = "03:30";
-
-        // First Time (pushed back 1 year to make sure it comes before current time)
-        var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
-        console.log(firstTimeConverted);
-
-        // Current Time
-        var currentTime = moment();
-        console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
-
-        // Difference between the times
-        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-        console.log("DIFFERENCE IN TIME: " + diffTime);
-
-        // Time apart (remainder)
-        var tRemainder = diffTime % tFrequency;
-        console.log(tRemainder);
-
-        // Minute Until Train
-        var tMinutesTillTrain = tFrequency - tRemainder;
-        console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
-
-        // Next Train
-        var nextTrain = moment().add(tMinutesTillTrain, "minutes");
-        console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
     </script>
 
 </body>
