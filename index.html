@@ -44,27 +44,18 @@
                     <th scope="col">Minutes Away</th>
                 </tr>
             </thead>
-            <tbody class="table-rows">
-                <tr>
-                    <td id="#table-names">Sam</td>
-                    <td id="#table-role">dbAdmin</td>
-                    <td id="#table-start">01/01/2012</td>
-                    <td id="#table-months">100</td>
-                    <td id="#table-rate">1900</td>
-                    <td id="#table-billed">190000</td>
-                </tr>
-            </tbody>
+            <tbody id="table-rows"></tbody>
         </table>
 
         <form>
             <h2>Add Train</h2>
             <div class="form-group">
-                <label for="add-train">Train Name</label>
-                <input type="text" class="form-control" id="add-train" placeholder="Amtrak Northeast Regional 66">
+                <label for="new-train">Train Name</label>
+                <input type="text" class="form-control" id="new-train" placeholder="Amtrak Northeast Regional 66">
             </div>
             <div class="form-group">
-                <label for="add-destination">Destination</label>
-                <input type="text" class="form-control" id="add-destination" placeholder="New York City">
+                <label for="new-destination">Destination</label>
+                <input type="text" class="form-control" id="new-destination" placeholder="New York City">
             </div>
             <div class="form-group">
                 <label for="new-first-time">First Train Time (HH:mm - military time)</label>
@@ -74,7 +65,7 @@
                 <label for="new-frequency">Frequency (min)</label>
                 <input type="text" class="form-control" id="new-frequency" placeholder="15">
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" id="new-submission">Submit</button>
         </form>
 
 
@@ -82,7 +73,7 @@
 
     <script>
 
-        // Your web app's Firebase configuration
+        // Web app's Firebase configuration
         var firebaseConfig = {
             apiKey: "AIzaSyBRjZsr6XPK7L-U8tfzWxgcyOMb34hTh28",
             authDomain: "trainpredictions-94fb6.firebaseapp.com",
@@ -92,11 +83,23 @@
             messagingSenderId: "607605936907",
             appId: "1:607605936907:web:7c67a6b432e6ee7eefc80e"
         };
-        
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
+        var train = "";
+        var destination = "";
+        var firstTime = "";
+        var frequency;
 
+        $("#new-submission").on("click", function(event){
+            event.preventDefault();
+
+            train = $("#add-train").val().trim();
+            destination = $("#add-train").val().trim();
+            firstTime
+            frequency
+        })
         // Assume the following situations.
 
         // (TEST 1)
