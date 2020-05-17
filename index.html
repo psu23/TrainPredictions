@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Train Predictions</title>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Bootstrap CDN-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Firebase References -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.14/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.14/firebase-database.js"></script>
+
+    <!-- Added Moment JS -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Anytime is Train Time</h1>
+            <h2>Choo Choo. Chee Chee.</h2>
+        </div>
+
+        <br>
+        <table class="table">
+            <thead>
+                <tr>
+                    <h2>Current Train Schedule</h2>
+                    <th scope="col">Train Name</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Frequency (min)</th>
+                    <th scope="col">Next Arrival</th>
+                    <th scope="col">Minutes Away</th>
+                </tr>
+            </thead>
+            <tbody class="table-rows">
+                <tr>
+                    <td id="#table-names">Sam</td>
+                    <td id="#table-role">dbAdmin</td>
+                    <td id="#table-start">01/01/2012</td>
+                    <td id="#table-months">100</td>
+                    <td id="#table-rate">1900</td>
+                    <td id="#table-billed">190000</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form>
+            <h2>Add Train</h2>
+            <div class="form-group">
+                <label for="add-train">Train Name</label>
+                <input type="text" class="form-control" id="add-train" placeholder="Amtrak Northeast Regional 66">
+            </div>
+            <div class="form-group">
+                <label for="add-destination">Destination</label>
+                <input type="text" class="form-control" id="add-destination" placeholder="New York City">
+            </div>
+            <div class="form-group">
+                <label for="new-first-time">First Train Time (HH:mm - military time)</label>
+                <input type="text" class="form-control" id="new-first-time" placeholder="19:30">
+            </div>
+            <div class="form-group">
+                <label for="new-frequency">Frequency (min)</label>
+                <input type="text" class="form-control" id="new-frequency" placeholder="15">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+
+    </div>
+
+    <script>
+
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBRjZsr6XPK7L-U8tfzWxgcyOMb34hTh28",
+            authDomain: "trainpredictions-94fb6.firebaseapp.com",
+            databaseURL: "https://trainpredictions-94fb6.firebaseio.com",
+            projectId: "trainpredictions-94fb6",
+            storageBucket: "trainpredictions-94fb6.appspot.com",
+            messagingSenderId: "607605936907",
+            appId: "1:607605936907:web:7c67a6b432e6ee7eefc80e"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+
+        // Assume the following situations.
+
+        // (TEST 1)
+        // First Train of the Day is 3:00 AM
+        var firstTime = "3:00 AM";
+        var currentTime = moment();
+        var trainInterval = time
+
+        // Assume Train comes every 3 minutes.
+        // Assume the current time is 3:16 AM....
+        // What time would the next train be...? (Use your brain first)
+        // It would be 3:18 -- 2 minutes away
+
+        // (TEST 2)
+        // First Train of the Day is 3:00 AM
+        // Assume Train comes every 7 minutes.
+        // Assume the current time is 3:16 AM....
+        // What time would the next train be...? (Use your brain first)
+        // It would be 3:21 -- 5 minutes away
+
+
+        // ==========================================================
+
+        // Solved Mathematically
+        // Test case 1:
+        // 16 - 00 = 16
+        // 16 % 3 = 1 (Modulus is the remainder)
+        // 3 - 1 = 2 minutes away
+        // 2 + 3:16 = 3:18
+
+        // Solved Mathematically
+        // Test case 2:
+        // 16 - 00 = 16
+        // 16 % 7 = 2 (Modulus is the remainder)
+        // 7 - 2 = 5 minutes away
+        // 5 + 3:16 = 3:21
+
+        // Assumptions
+        var tFrequency = 3;
+
+        // Time is 3:30 AM
+        var firstTime = "03:30";
+
+        // First Time (pushed back 1 year to make sure it comes before current time)
+        var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+        console.log(firstTimeConverted);
+
+        // Current Time
+        var currentTime = moment();
+        console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+        // Difference between the times
+        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        console.log("DIFFERENCE IN TIME: " + diffTime);
+
+        // Time apart (remainder)
+        var tRemainder = diffTime % tFrequency;
+        console.log(tRemainder);
+
+        // Minute Until Train
+        var tMinutesTillTrain = tFrequency - tRemainder;
+        console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+        // Next Train
+        var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+        console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+    </script>
+
+</body>
+
+</html>
