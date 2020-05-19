@@ -10,31 +10,57 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <style>
+        
+        .header {
+            background: rgb(41, 41, 179);
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
 
+        .table-container, form {
+            border: solid 2px rgb(41, 41, 179);
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            background: rgb(41, 41, 179);
+            color: white;
+            padding: 5px;
+        }
+
+        .form-group, button {
+            margin: 5px;
+        }
+
+    </style>
 </head>
 
 <body>
 
     <div class="container">
         <div class="header">
-            <h1>Anytime is Train Time</h1>
-            <h2>Choo Choo. Chee Chee.</h2>
+            <h1>Train Predictor</h1>
+            <h2>Find out when your next train arrives</h2>
         </div>
 
         <br>
-        <table class="table">
-            <thead>
-                <tr>
-                    <h2>Current Train Schedule</h2>
-                    <th scope="col">Train Name</th>
-                    <th scope="col">Destination</th>
-                    <th scope="col">Frequency (min)</th>
-                    <th scope="col">Next Arrival</th>
-                    <th scope="col">Minutes Away</th>
-                </tr>
-            </thead>
-            <tbody id="table-rows"></tbody>
-        </table>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <h2>Current Train Schedule</h2>
+                        <th scope="col">Train Name</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Frequency (min)</th>
+                        <th scope="col">Next Arrival</th>
+                        <th scope="col">Minutes Away</th>
+                    </tr>
+                </thead>
+                <tbody id="table-rows"></tbody>
+            </table>
+        </div>
 
         <form>
             <h2>Add Train</h2>
@@ -147,7 +173,7 @@
 
             // add the amount of minutes until the next train to the current time
             var nextTrain = currentTime.add(minUntilNext, "minutes");
-            var arrivalTime = nextTrain.format("HH:mm A")
+            var arrivalTime = nextTrain.format("h:mm A")
             console.log("Next arrival: " + moment(nextTrain).format("hh:mm"));
 
             //append the necessary data to the table
